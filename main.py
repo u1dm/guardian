@@ -1,5 +1,4 @@
 from session import Session
-from db import db
 import os
 s = Session()
 
@@ -90,7 +89,6 @@ def delete_password():
     clear_console()
 
 def exit_program():
-    db.close()
     clear_console()
     exit(0)
 

@@ -1,17 +1,22 @@
 from session import Session
 from db import db
-
+import os
 s = Session()
 
+def clear_console():
+    command = "cls" if os.name == "nt" else "clear"
+    os.system(command)
 
 def login():
     username = input("enter username: ")
     master_password = input("enter master password: ")
     login_state = s.login(username=username, master_password=master_password)
     if login_state == "SUCCESS_LOGIN":
+        clear_console()
         print("You are successfully logined!")
         menu()
     elif login_state == "FAIL_LOGIN":
+        clear_console()
         print("Wrong password or username! Try again.")
         login()
 
@@ -21,10 +26,12 @@ def register():
     master_password = input("enter master password: ")
     reg_state = s.register(username=username, master_password=master_password)
     if reg_state == "SUCCESS_REGISTER":
+        clear_console()
         print("You are successfully registred!")
         s.login(username, master_password)
         menu()
     elif reg_state == "USER_ALREADY_EXISTS":
+        clear_console()
         print("User already exists! Try again.")
         register()
 
@@ -34,20 +41,58 @@ def add_password():
     login = input("enter login: ")
     password = input("enter password: ")
     s.add_password(label=label, login=login, password=password)
+    clear_console()
 
 
 def get_password():
     label = input("enter label: ")
-    print(s.get_password(label=label))
+    item = s.get_password(label=label)
+    if item is None:
+        clear_console()
+        print("No password with that label!")
+        return
+    max_label_length = len(item["label"])
+    max_login_length = len(item["login"])
+    max_password_length = len(item["password"])
+    clear_console()
+    print(
+        f"{'Label':<{max_label_length}} {'Login':<{max_login_length}} {'Password':<{max_password_length}}"
+    )
+
+    print(
+        f"{item['label']:<{max_label_length}} {item['login']:<{max_login_length}} {item['password']:<{max_password_length}}"
+    )
 
 
 def list_passwords():
-    print(s.list_all_passwords())
+    passwords = s.list_all_passwords()
+    if passwords == []:
+        clear_console()
+        print('You have no passwords yet!')
+        return
+    max_label_length = max(len(item["label"]) for item in passwords)
+    max_login_length = max(len(item["login"]) for item in passwords)
+    max_password_length = max(len(item["password"]) for item in passwords)
+    clear_console()
+    print(
+        f"{'Label':<{max_label_length}} {'Login':<{max_login_length}} {'Password':<{max_password_length}}"
+    )
+
+    for item in passwords:
+        print(
+            f"{item['label']:<{max_label_length}} {item['login']:<{max_login_length}} {item['password']:<{max_password_length}}"
+        )
+
 
 def delete_password():
     label = input("enter label: ")
     s.delete_password(label=label)
+    clear_console()
 
+def exit_program():
+    db.close()
+    clear_console()
+    exit(0)
 
 def menu():
     while True:
@@ -69,13 +114,14 @@ def menu():
         elif choice == "4":
             delete_password()
         elif choice == "5":
-            db.close()
-            exit(0)
+            exit_program()
         else:
+            clear_console()
             print("Invalid choice. Please try again.")
 
 
 def main():
+    clear_console()
     print("1. Login")
     print("2. Register")
 
@@ -85,11 +131,13 @@ def main():
         login()
     elif choice == "2":
         register()
-
+    else:
+        clear_console()
+        print("Invalid choice. Please try again.")
+        main()
 
 if __name__ == "__main__":
     try:
         main()
     except KeyboardInterrupt:
-        db.close()
-        exit(0)
+        exit_program()

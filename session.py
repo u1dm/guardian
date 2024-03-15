@@ -61,12 +61,17 @@ class Session:
             if data:
                 encrypted_password = data[3]
                 cipher = Fernet(self.__encryption_key)
-                return cipher.decrypt(encrypted_password).decode()
+                decrypted_password = cipher.decrypt(encrypted_password).decode()
+                return {'label': data[1], 'login': data[2], 'password': decrypted_password}
         
     def list_all_passwords(self) -> list:
         if self.__is_logined:
+            result = []
             db.execute(f"SELECT * FROM {self.__username}")
-            return [(i[1], i[2], self.get_password(i[1])) for i in db.cursor.fetchall()]
+            for i in db.cursor.fetchall():
+                data = {'label': i[1], 'login': i[2], 'password': self.get_password(i[1])['password']}
+                result.append(data)
+            return result
         
     def delete_password(self, label: str) -> None:
         if self.__is_logined:

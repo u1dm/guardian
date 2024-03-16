@@ -3,19 +3,19 @@ from flet import TextField, Checkbox, ElevatedButton, Text, Row, Column
 from flet_core.control_event import ControlEvent
 from session import Session
 s = Session()
+
 def main(page: ft.Page) -> None:
         page.title = 'Sigunp'         
         page.vertical_alignment=ft.MainAxisAlignment.CENTER                               
         page.theme_mode = ft.ThemeMode.DARK
 
-        # Setup our fields 
         text_username : TextField = TextField(label='Username', text_align=ft.TextAlign.LEFT, width=200)
         text_password : TextField = TextField(label='Password', text_align=ft.TextAlign.LEFT, width=200, password=True)
-        checkbox_signup: Checkbox = Checkbox(label='I agree to stuff', value=False)
+        button_register: ElevatedButton = ElevatedButton(text='Register', width=200)
         button_sudmit: ElevatedButton = ElevatedButton(text='Sing up', width=200, disabled=True)
         
         def validate(e: ControlEvent) -> None:
-                if all([text_username.value, text_password.value, checkbox_signup.value]):
+                if all([text_username.value, text_password.value]):
                         button_sudmit.disabled = False
                 else:
                     button_sudmit.disable = True
@@ -42,6 +42,9 @@ def main(page: ft.Page) -> None:
         password_field : TextField = TextField(label='Password', text_align=ft.TextAlign.LEFT)
         confirm_add_button : ElevatedButton = ElevatedButton(text='Confirm')
 
+        register_user : TextField = TextField(label='Login', text_align=ft.TextAlign.LEFT)
+        register_master_password : TextField = TextField(label='Password', text_align=ft.TextAlign.LEFT)
+        button_register_confirm :  ElevatedButton = ElevatedButton(text='Register')
 
         label_field_delete : TextField = TextField(label='Label', text_align=ft.TextAlign.LEFT)
         confirm_add_button_delete : ElevatedButton = ElevatedButton(text='Confirm')
@@ -66,6 +69,7 @@ def main(page: ft.Page) -> None:
                            page.vertical_alignment=ft.MainAxisAlignment.START
                            page.add(ft.Text(i))
               page.add(add_button)
+              page.add(delete_button)
                
         def delete_password(e: ControlEvent) -> None:
             page.clean()
@@ -82,15 +86,56 @@ def main(page: ft.Page) -> None:
                            page.vertical_alignment=ft.MainAxisAlignment.START
                            page.add(ft.Text(i))
                page.add(add_button)
+               page.add(delete_button)
+
+        def register(e: ControlEvent) -> None:
+              page.clean()
+              page.add(   
+                     Row( 
+                            alignment=ft.MainAxisAlignment.CENTER,
+                            controls=[    
+                                   Column(   
+                                   [
+                                          register_user,
+                                          register_master_password,
+                                          button_register_confirm
+                                   ]
+                            )
+                                   
+                            ],
+                     )
+              )
 
 
+
+        def register_2(e: ControlEvent) -> None:
+              print('User:', register_user.value)
+              print('Password:', register_master_password.value)
+              s.register(username=register_user.value, master_password=register_master_password.value)
+              page.clean()
+              page.add(   
+                     Row( 
+                            alignment=ft.MainAxisAlignment.CENTER,
+                            controls=[    
+                                   Column(   
+                                   [text_username,
+                                   text_password,
+                                   button_sudmit, button_register
+                                   ]
+                            )
+                                   
+                            ],
+                     )
+              )
+
+        button_register_confirm.on_click = register_2
         confirm_add_button_delete.on_click = delete2_password
         delete_button.on_click = delete_password
 
         add_button.on_click = add_password
         confirm_add_button.on_click = add2_password
 
-        checkbox_signup.on_change = validate
+        button_register.on_click = register
         text_username.on_change = validate
         text_password.on_change = validate
         button_sudmit.on_click = sumbit
@@ -102,8 +147,7 @@ def main(page: ft.Page) -> None:
                             Column(   
                              [text_username,
                               text_password,
-                              checkbox_signup,
-                              button_sudmit
+                              button_sudmit, button_register
                               ]
                       )
                              

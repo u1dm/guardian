@@ -24,6 +24,7 @@ def main(page: ft.Page) -> None:
 
         add_button: ElevatedButton = ElevatedButton(text='Add')
         delete_button: ElevatedButton = ElevatedButton(text='Delete')
+
         def sumbit(e: ControlEvent) -> None:
                print('Username:', text_username.value)
                print('Password:', text_password.value)
@@ -95,7 +96,8 @@ def main(page: ft.Page) -> None:
                             alignment=ft.MainAxisAlignment.CENTER,
                             controls=[    
                                    Column(   
-                                   [
+                                   [      
+                                          
                                           register_user,
                                           register_master_password,
                                           button_register_confirm
@@ -105,6 +107,32 @@ def main(page: ft.Page) -> None:
                             ],
                      )
               )
+
+       #  def database(e: ControlEvent) -> None:
+       #        page.clean()
+       #        page.add(     
+       #                      ft.DataTable(       
+       #                             columns=[   
+       #                                    ft.DataColumn(ft.Text("Label")),
+       #                                    ft.DataColumn(ft.Text("Login")),
+       #                                    ft.DataColumn(ft.Text("Password")),
+       #                             ],
+
+                            
+       #                             rows=[
+                                          
+       #                                    ft.DataRow( 
+       #                                           cells=[      
+                                                 
+       #                                                  ft.DataCell(ft.Text(i[1])),
+       #                                                  ft.DataCell(ft.Text(i[2])),
+       #                                                  ft.DataCell(ft.Text(i[3])),                                         
+                                                               
+       #                                           ],
+       #                                    ),
+       #                             ],
+       #                      ),
+       #               )
 
 
 
@@ -145,7 +173,9 @@ def main(page: ft.Page) -> None:
                       alignment=ft.MainAxisAlignment.CENTER,
                       controls=[    
                             Column(   
-                             [text_username,
+                             [
+                              ft.Text('Guardian', text_align='CENTER', size='20'),
+                              text_username,
                               text_password,
                               button_sudmit, button_register
                               ]
